@@ -1,60 +1,102 @@
 #include "ClapTrap.hpp"
 
-ClapTrap::ClapTrap(const std::string& name)
-	: name(name), hitPoints(10), energyPoints(10), attackDamage(0) {
-	std::cout << "ClapTrap " << this->name << " constructed!" << std::endl;
+// - Canonical constructors - //
+
+ClapTrap::ClapTrap()
+	: _name("unnamed"),
+	  _hp(defaultHp_()),
+	  _energy(defaultEnergy_()),
+	  _atk(defaultAtk_())
+{
+	std::cout << "ClapTrap " << _name << " constructed (default).\n";
+}
+ClapTrap::ClapTrap(const std::string &name)
+	: _name(name),
+	  _hp(defaultHp_()),
+	  _energy(defaultEnergy_()),
+	  _atk(defaultAtk_())
+{
+	std::cout << "ClapTrap " << _name << " constructed.\n";
 }
 
-ClapTrap::ClapTrap(const ClapTrap& other) {
-	*this = other;
-	std::cout << "ClapTrap " << this->name << " copied!" << std::endl;
+ClapTrap::ClapTrap(const ClapTrap &other)
+	: _name(other._name),
+	  _hp(other._hp),
+	  _energy(other._energy),
+	  _atk(other._atk)
+{
+	std::cout << "ClapTrap " << _name << " copied.\n";
 }
 
-ClapTrap& ClapTrap::operator=(const ClapTrap& other) {
+ClapTrap& ClapTrap::operator=(const ClapTrap& other)
+{
 	if (this != &other) {
-		this->name = other.name;
-		this->hitPoints = other.hitPoints;
-		this->energyPoints = other.energyPoints;
-		this->attackDamage = other.attackDamage;
+		_name   = other._name;
+		_hp     = other._hp;
+		_energy = other._energy;
+		_atk    = other._atk;
 	}
-	std::cout << "ClapTrap " << this->name << " assigned!" << std::endl;
+	std::cout << "ClapTrap " << _name << " assigned.\n";
 	return *this;
 }
 
 ClapTrap::~ClapTrap() {
-	std::cout << "ClapTrap " << this->name << " destroyed!" << std::endl;
+	std::cout << "ClapTrap " << _name << " destroyed.\n";
 }
 
-void ClapTrap::attack(const std::string& target) {
-	if (energyPoints > 0 && hitPoints > 0) {
-		std::cout << "ClapTrap " << name
-				  << " attacks " << target
-				  << ", causing " << attackDamage
-				  << " points of damage!" << std::endl;
-		energyPoints--;
-	} else {
-		std::cout << "ClapTrap " << name << " cannot attack (no energy or dead)." << std::endl;
+// - Private helper methods - //
+
+bool ClapTrap::canAct_(const char *action) const
+{
+	if (_hp == 0u) {
+		std::cout << "ClapTrap " << _name << " cannot " << action << " (dead).\n";
+		return false;
 	}
+	if (_energy == 0u) {
+		std::cout << "ClapTrap " << _name << " cannot " << action << " (no energy).\n";
+		return false;
+	}
+	return true;
 }
 
-void ClapTrap::takeDamage(unsigned int amount) {
-	hitPoints -= amount;
-	if (hitPoints < 0) hitPoints = 0;
-	std::cout << "ClapTrap " << name
-			  << " takes " << amount
+void ClapTrap::spendEnergy_(unsigned int amount)
+{
+	_energy = (_energy >= amount) ? (_energy - amount) : 0u;
+}
+
+// - Public member functions - //
+
+void ClapTrap::attack(const std::string& target)
+{
+	if (!canAct_("attack"))
+		return;
+	std::cout << "ClapTrap " << _name
+			  << " attacks " << target
+			  << ", causing " << _atk
+			  << " points of damage!\n";
+	spendEnergy_(1u);
+}
+
+void ClapTrap::takeDamage(unsigned int amount)
+{
+	const unsigned int dealt = std::min(_hp, amount);
+	_hp -= dealt;
+
+	std::cout << "ClapTrap " << _name
+			  << " takes " << dealt
 			  << " points of damage! Remaining HP: "
-			  << hitPoints << std::endl;
+			  << _hp << '\n';
 }
 
-void ClapTrap::beRepaired(unsigned int amount) {
-	if (energyPoints > 0 && hitPoints > 0) {
-		hitPoints += amount;
-		energyPoints--;
-		std::cout << "ClapTrap " << name
-				  << " repairs itself, recovering "
-				  << amount << " HP! Total HP: "
-				  << hitPoints << std::endl;
-	} else {
-		std::cout << "ClapTrap " << name << " cannot repair (no energy or dead)." << std::endl;
-	}
+void ClapTrap::beRepaired(unsigned int amount)
+{
+	if (!canAct_("repair"))
+	return;
+
+	_hp += amount;
+	spendEnergy_(1u);
+
+	std::cout << "ClapTrap " << _name
+			  << " repairs itself, recovering " << amount
+			  << " HP! Total HP: " << _hp << '\n';
 }
