@@ -5,31 +5,38 @@
 #include <iostream>
 
 class ClapTrap {
-private:
-	std::string name;
-	int		 hitPoints;
-	int		 energyPoints;
-	int		 attackDamage;
-
-protected:
-	void setStats(int hp, int ep, int ad);
-	bool canAct() const;
-	void consumeEnergy(unsigned int n);
-
 public:
-	ClapTrap(const std::string& name);
+	// Constructors/destructor
+	ClapTrap();
+	explicit ClapTrap(const std::string& name);
 	ClapTrap(const ClapTrap& other);
 	ClapTrap& operator=(const ClapTrap& other);
 	~ClapTrap();
 
+	// Public member functions
 	void attack(const std::string& target);
 	void takeDamage(unsigned int amount);
 	void beRepaired(unsigned int amount);
 
-	const std::string& getName() const;
-	int  getHitPoints() const;
-	int  getEnergyPoints() const;
-	int  getAttackDamage() const;
+protected:
+	//API
+	void initStats_(unsigned int hp, unsigned int energy, unsigned int atk);
+
+	//Data members
+	std::string	_name;
+	unsigned int _hp;
+	unsigned int _energy;
+	unsigned int _atk;
+
+private:
+	// Internal helper functions
+	bool canAct_(const char* action) const; // Check if the ClapTrap can perform action
+	void spendEnergy_(unsigned int amount); //deduct energy (clean version)
+
+	// Default stats
+	static unsigned int defaultHp_() 	{ return 10u; }
+	static unsigned int defaultEnergy_(){ return 10u; }
+	static unsigned int defaultAtk_()	{ return 0u; }
 };
 
 #endif
