@@ -17,6 +17,7 @@ public:
 	void attack(const std::string& target);
 	void guardGate();
 private:
+	// membres de classe statiques constants.
 	static const unsigned int kDefaultHp  = 100u;
 	static const unsigned int kDefaultEn  = 50u;
 	static const unsigned int kDefaultAtk = 20u;

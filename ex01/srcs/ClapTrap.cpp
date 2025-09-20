@@ -32,9 +32,9 @@ ClapTrap& ClapTrap::operator=(const ClapTrap& other)
 {
 	if (this != &other) {
 		_name   = other._name;
-		_hp     = other._hp;
+		_hp	 = other._hp;
 		_energy = other._energy;
-		_atk    = other._atk;
+		_atk	= other._atk;
 	}
 	std::cout << "ClapTrap " << _name << " assigned.\n";
 	return *this;
