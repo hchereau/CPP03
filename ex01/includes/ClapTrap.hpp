@@ -19,15 +19,16 @@ public:
 	void beRepaired(unsigned int amount);
 
 protected:
+	//API
+	void initStats_(unsigned int hp, unsigned int energy, unsigned int atk);
 
-
-private:
-	// Data members
+	//Data members
 	std::string	_name;
 	unsigned int _hp;
 	unsigned int _energy;
 	unsigned int _atk;
 
+private:
 	// Internal helper functions
 	bool canAct_(const char* action) const; // Check if the ClapTrap can perform action
 	void spendEnergy_(unsigned int amount); //deduct energy (clean version)

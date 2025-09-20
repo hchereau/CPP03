@@ -79,7 +79,7 @@ void ClapTrap::attack(const std::string& target)
 
 void ClapTrap::takeDamage(unsigned int amount)
 {
-	const unsigned int dealt = std::min(_hp, amount);
+	const unsigned int dealt = (amount < _hp) ? amount : _hp;
 	_hp -= dealt;
 
 	std::cout << "ClapTrap " << _name

@@ -100,3 +100,9 @@ void ClapTrap::beRepaired(unsigned int amount)
 			  << " repairs itself, recovering " << amount
 			  << " HP! Total HP: " << _hp << '\n';
 }
+
+void ClapTrap::initStats_(unsigned int hp, unsigned int energy, unsigned int atk) {
+	_hp = hp;
+	_energy = energy;
+	_atk = atk;
+}
